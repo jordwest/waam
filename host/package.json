@@ -1,11 +1,12 @@
 {
-  "name": "waam_host",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "version": "0.0.0",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "serve": "vite preview"
   },
-  "author": "",
-  "license": "ISC"
+  "devDependencies": {
+    "typescript": "^4.3.2",
+    "vite": "^2.3.7"
+  }
 }
