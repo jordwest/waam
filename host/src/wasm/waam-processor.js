@@ -1,9 +1,3 @@
-let t = 0;
-let sample_rate = 44100;
-let sample_length = 1.0 / sample_rate;
-let hz = 2 * Math.PI;
-let sampleOffset = 0;
-
 class WaamProcessor extends AudioWorkletProcessor {
     constructor() {
         super();
@@ -25,11 +19,18 @@ class WaamProcessor extends AudioWorkletProcessor {
     process(inputs, outputs) {
         if (this.wasmModule != null) {
             const samples = outputs[0][0].length;
+            const memView = new DataView(this.wasmModule.exports.memory.buffer);
+            const inputPtr = this.wasmModule.exports.inputBuffer;
+            
+            // Copy inputs to audio input
+            if (inputs.length > 0 && inputs[0].length > 0) {
+                for (let i = 0; i < samples; i++) {
+                    const val = inputs[0][0][i];
+                    memView.setFloat32(inputPtr + (i * 4), val, true);
+                }
+            }
             
             const ptr = this.wasmModule.exports.process(samples);
-            const memView = new DataView(this.wasmModule.exports.memory.buffer);
-            
-            const waveformSampleCount = sample_rate / 440;
             
             // Copy data to audio output
             for (let i = 0; i < samples; i++) {
@@ -40,8 +41,6 @@ class WaamProcessor extends AudioWorkletProcessor {
                 // outputs[0][0][i] = Math.sin((sampleOffset + i) * ((Math.PI * 2) / waveformSampleCount))
                 // outputs[0][0][i] = (i % 100) < 50 ? 1.0 : -1.0;
             }
-            t += (samples * sample_length)
-            sampleOffset += samples;
             // throw new Error('die');
         }
         

@@ -8,6 +8,9 @@ const hz = 2 * Math.PI as f32;
 
 const sample_length = 1.0 / (sample_rate as f32);
 
+// Unused for now
+export const inputBuffer = new ArrayBuffer(4096 * 4);
+
 export const outputBuffer = new ArrayBuffer(4096 * 4);
 export const outputView = new DataView(outputBuffer);
 
